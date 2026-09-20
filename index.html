@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#17221e" />
+    <title>吹牛骰子</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">LIAR'S DICE</p>
+          <h1>吹牛骰子</h1>
+        </div>
+        <div class="match-meta" aria-label="对局信息">
+          <span id="roundLabel">第 1 / 3 局</span>
+          <span class="meta-dot" aria-hidden="true"></span>
+          <span id="turnLabel">你的回合</span>
+        </div>
+      </header>
+
+      <section class="match-controls" aria-label="比赛设置">
+        <label>
+          <span>比赛局数</span>
+          <select id="matchLengthInput">
+            <option value="1">单局</option>
+            <option value="3" selected>三局两胜</option>
+            <option value="5">五局三胜</option>
+            <option value="7">七局四胜</option>
+          </select>
+        </label>
+        <div class="match-rule-note">
+          <span class="eyebrow">MATCH FORMAT</span>
+          <strong id="matchFormatLabel">三局两胜 · 双方固定 3 颗骰子</strong>
+        </div>
+        <button id="newGameButton" class="secondary-button" type="button">新比赛</button>
+      </section>
+
+      <section class="scoreboard" aria-label="比分">
+        <div class="player-score human-score">
+          <div class="player-heading">
+            <span class="status-light human-light"></span>
+            <span>你</span>
+          </div>
+          <strong id="humanWins">0</strong>
+          <small>胜局 · 固定 3 颗</small>
+        </div>
+        <div class="score-divider">VS</div>
+        <div class="player-score ai-score">
+          <div class="player-heading">
+            <span class="status-light ai-light"></span>
+            <span>概率 AI</span>
+          </div>
+          <strong id="aiWins">0</strong>
+          <small>胜局 · 固定 3 颗</small>
+        </div>
+      </section>
+
+      <section class="table-area">
+        <div class="player-zone ai-zone">
+          <div class="zone-label">
+            <span>AI 的骰子</span>
+            <span class="private-label">隐藏</span>
+          </div>
+          <div id="aiDiceTray" class="dice-tray" aria-label="AI 的隐藏骰子"></div>
+        </div>
+
+        <div class="bid-stage" aria-live="polite">
+          <p class="stage-label">当前叫法</p>
+          <div id="bidDisplay" class="bid-display empty">等待第一口</div>
+          <p id="bidHint" class="bid-hint">先叫一个数量和点数</p>
+        </div>
+
+        <div class="player-zone human-zone">
+          <div class="zone-label">
+            <span>你的骰子</span>
+            <span id="humanDiceHint" class="private-label">可见</span>
+          </div>
+          <div id="humanDiceTray" class="dice-tray" aria-label="你的骰子"></div>
+        </div>
+      </section>
+
+      <section class="action-area">
+        <div class="call-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">YOUR MOVE</p>
+              <h2>轮到你时</h2>
+            </div>
+            <span id="moveStatus" class="move-status">准备中</span>
+          </div>
+          <div class="bid-form">
+            <label>
+              <span>数量</span>
+              <input id="quantityInput" type="number" min="1" max="6" value="1" inputmode="numeric" />
+            </label>
+            <label>
+              <span>点数</span>
+              <select id="faceInput">
+                <option value="1">一点</option>
+                <option value="2">二点</option>
+                <option value="3">三点</option>
+                <option value="4">四点</option>
+                <option value="5">五点</option>
+                <option value="6">六点</option>
+              </select>
+            </label>
+            <button id="bidButton" class="primary-button" type="button">叫这个</button>
+            <button id="challengeButton" class="danger-button" type="button">开</button>
+          </div>
+          <p id="validationMessage" class="validation-message">数量不能超过桌面上的骰子总数。</p>
+        </div>
+
+        <aside class="log-panel">
+          <div class="panel-heading compact-heading">
+            <div>
+              <p class="eyebrow">TABLE TALK</p>
+              <h2>牌桌记录</h2>
+            </div>
+            <span class="strategy-chip">CFR + 概率</span>
+          </div>
+          <ol id="eventLog" class="event-log" aria-live="polite"></ol>
+        </aside>
+      </section>
+
+      <footer class="footer-bar">
+        <span>1 点对 2–6 点作万能点，叫 1 点时只算 1 点。</span>
+        <span>实际数量等于叫牌数量时，叫法成立。</span>
+      </footer>
+    </main>
+
+    <div id="resultModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+      <section class="result-modal">
+        <div class="result-kicker">ROUND RESULT</div>
+        <h2 id="resultTitle">开盅</h2>
+        <p id="resultSummary" class="result-summary"></p>
+        <div class="reveal-row">
+          <div>
+            <span>你的骰子</span>
+            <div id="resultHumanDice" class="mini-dice-tray"></div>
+          </div>
+          <div>
+            <span>AI 的骰子</span>
+            <div id="resultAiDice" class="mini-dice-tray"></div>
+          </div>
+        </div>
+        <p id="resultScore" class="result-score"></p>
+        <p id="resultDetail" class="result-detail"></p>
+        <button id="continueButton" class="primary-button wide-button" type="button">下一局</button>
+      </section>
+    </div>
+
+    <script src="cfr-model.js"></script>
+    <script src="logic.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+
+# 注意：cfr_model.pkl（约 80MB）是刻意提交的，
+# 用于让 Python 版开箱即用；如需重新生成请运行 train.py。
